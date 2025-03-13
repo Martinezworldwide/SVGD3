@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z80 Microprocessor Pinout</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        .pin {
+            font-size: 12px;
+            fill: black;
+            text-anchor: middle;
+        }
+        .bus {
+            stroke: black;
+            stroke-width: 2;
+        }
+        .chip {
+            fill: #ccc;
+            stroke: black;
+            stroke-width: 3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Z80 Microprocessor Pinout</h1>
+        <p>An interactive D3.js representation of the Z80 microprocessor pinout.</p>
+        <svg id="z80-diagram" width="1000" height="1400"></svg>
+    </div>
+    <script>
+        const svg = d3.select("#z80-diagram");
+        
+        // Draw microprocessor body
+        svg.append("rect")
+            .attr("x", 400)
+            .attr("y", 300)
+            .attr("width", 140)
+            .attr("height", 800)
+            .attr("class", "chip");
+        
+        svg.append("text")
+            .attr("x", 467)
+            .attr("y", 320)
+            .attr("font-size", 16)
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "middle")
+            .text("Z80");
+        
+        // Define pin layout
+        const leftPins = ["A11", "A12", "A13", "A14", "A15", "Clock", "D4", "D3", "D5", "D6", "+5V", "D2","D7", "D0", "D1", "INT", "NMI", "HALT", "MREQ", "IORQ"];
+        const rightPins = ["A10", "A9", "A8", "A7", "A6", "A5", "A4", "A3", "A2", "A1", "A0", "GND", "RFSH", "M1", "RESET", "BUSRQ", "WAIT", "BUSAK", "WR", "RD"];
+        
+        // Function to create pins
+        function createPins(side, pinList, xPos, textAlign, lineXPos) {
+            svg.selectAll(".pin-text-" + side)
+                .data(pinList)
+                .enter()
+                .append("text")
+                .attr("x", xPos)
+                .attr("y", (d, i) => 330 + i * 25)
+                .attr("class", "pin")
+                .attr("text-anchor", textAlign)
+                .text(d => d);
+            
+            svg.selectAll(".pin-line-" + side)
+                .data(pinList)
+                .enter()
+                .append("line")
+                .attr("x1", lineXPos)
+                .attr("y1", (d, i) => 330 + i * 25 - 5)
+                .attr("x2", 400)
+                .attr("y2", (d, i) => 330 + i * 25 - 5)
+                .attr("stroke", "black")
+                .attr("stroke-width", "2");
+        }
+        
+        // Add left and right pins
+        createPins("left", leftPins, 360, "end", 390);
+        createPins("right", rightPins, 590, "start", 550);
+        
+        // Address and Data Buses
+        svg.append("line").attr("x1", 150).attr("y1", 900).attr("x2", 850).attr("y2", 900).attr("class", "bus").attr("stroke-dasharray", "5,5");
+        svg.append("text").attr("x", 500).attr("y", 890).attr("class", "pin").text("Address Bus");
+        
+        svg.append("line").attr("x1", 150).attr("y1", 1000).attr("x2", 850).attr("y2", 1000).attr("class", "bus").attr("stroke-dasharray", "5,5");
+        svg.append("text").attr("x", 500).attr("y", 990).attr("class", "pin").text("Data Bus");
+    </script>
+</body>
+</html>
