@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z80 Microprocessor Diagrams</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        .box {
+            fill: white;
+            stroke: black;
+            stroke-width: 2;
+            rx: 10;
+            ry: 10;
+        }
+        .line {
+            stroke: black;
+            stroke-width: 2;
+        }
+        .arrow {
+            marker-end: url(#arrow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Z80 Microprocessor Diagrams</h1>
+        
+        <h2>Fetch-Decode-Execute Cycle Diagram</h2>
+        <svg id="fetch-decode-execute" width="500" height="600"></svg>
+        
+        <h2>Interrupt Handling in the Z80 Microprocessor</h2>
+        <svg id="interrupt-handling" width="500" height="700"></svg>
+        
+        <h2>Z80 Microprocessor Block Diagram</h2>
+        <svg id="block-diagram" width="700" height="400"></svg>
+        
+        <h2>Combined Diagram for Both Processes</h2>
+        <svg id="combined-diagram" width="500" height="900"></svg>
+    </div>
+    
+    <script>
+        function createFlowchart(svgId, steps) {
+            const svg = d3.select(svgId);
+            const startY = 50;
+            const boxHeight = 50;
+            
+            steps.forEach((step, i) => {
+                let y = startY + i * (boxHeight + 20);
+                svg.append("rect")
+                    .attr("x", 150)
+                    .attr("y", y)
+                    .attr("width", 200)
+                    .attr("height", boxHeight)
+                    .attr("class", "box");
+                
+                svg.append("text")
+                    .attr("x", 250)
+                    .attr("y", y + 30)
+                    .attr("text-anchor", "middle")
+                    .text(step);
+                
+                if (i < steps.length - 1) {
+                    svg.append("line")
+                        .attr("x1", 250)
+                        .attr("y1", y + boxHeight)
+                        .attr("x2", 250)
+                        .attr("y2", y + boxHeight + 20)
+                        .attr("class", "line arrow");
+                }
+            });
+        }
+        
+        createFlowchart("#fetch-decode-execute", [
+            "Fetch Instruction from Memory",
+            "Decode Instruction",
+            "Execute Instruction",
+            "Next Instruction"
+        ]);
+        
+        createFlowchart("#interrupt-handling", [
+            "Interrupt Triggered",
+            "Finish Current Instruction",
+            "Save PC and Registers to Stack",
+            "Jump to ISR at 0038h",
+            "Execute ISR",
+            "Restore PC and Registers",
+            "Resume Execution"
+        ]);
+        
+        function createBlockDiagram(svgId) {
+            const svg = d3.select(svgId);
+            
+            let components = [
+                { name: "ALU", x: 100, y: 50 },
+                { name: "Registers", x: 250, y: 50 },
+                { name: "Control Unit", x: 400, y: 50 },
+                { name: "Program Counter", x: 550, y: 50 },
+                { name: "Data Bus", x: 300, y: 200 }
+            ];
+            
+            components.forEach(comp => {
+                svg.append("rect")
+                    .attr("x", comp.x)
+                    .attr("y", comp.y)
+                    .attr("width", 120)
+                    .attr("height", 60)
+                    .attr("class", "box");
+                
+                svg.append("text")
+                    .attr("x", comp.x + 60)
+                    .attr("y", comp.y + 35)
+                    .attr("text-anchor", "middle")
+                    .text(comp.name);
+            });
+            
+            [[100, 200], [250, 200], [400, 200], [550, 200]].forEach(pos => {
+                svg.append("line")
+                    .attr("x1", pos[0] + 60)
+                    .attr("y1", pos[1] - 40)
+                    .attr("x2", 360)
+                    .attr("y2", 200)
+                    .attr("class", "line");
+            });
+        }
+        createBlockDiagram("#block-diagram");
+        
+        createFlowchart("#combined-diagram", [
+            "Fetch Instruction from Memory",
+            "Decode Instruction",
+            "Execute Instruction",
+            "Interrupt Triggered?",
+            "Finish Current Instruction",
+            "Save PC and Registers to Stack",
+            "Jump to ISR at 0038h",
+            "Execute ISR",
+            "Restore PC and Registers",
+            "Resume Execution"
+        ]);
+        
+    </script>
+</body>
+</html>
